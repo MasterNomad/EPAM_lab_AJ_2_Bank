@@ -14,7 +14,6 @@ public class AccountService {
         accountRepository.getAll().stream()
                 .peek(e -> sum.addAndGet(e.getBalance()))
                 .forEach(System.out::println);
-        System.out.println("Sum: " + sum);
     }
 
     public long getAccountMoneySum() {

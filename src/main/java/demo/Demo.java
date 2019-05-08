@@ -1,16 +1,15 @@
 package demo;
 
-import exception.BankException;
-import exception.NotEnoughMoneyException;
-import io.FilesIO;
 import repository.AccountRepository;
 import service.AccountService;
 import service.MoneyTransferService;
+import thread.TransferTask;
 import util.Beans;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 public class Demo {
 
@@ -19,21 +18,27 @@ public class Demo {
     private MoneyTransferService moneyTransferService = Beans.getMoneyTransferService();
 
     public void execute() {
+        new Filler().fillAccounts("data", 10);
 
-        FillData("data", 10);
         long initialSum = accountService.getAccountMoneySum();
 
-        accountService.printAccountsBalance();
         ExecutorService executor = Executors.newFixedThreadPool(20);
+
+        IntStream.range(0, 1000).forEach(i -> executor.submit(new TransferTask()));
+
+        executor.shutdown();
+
+        try {
+            executor.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         accountService.printAccountsBalance();
-
-        System.out.println("Initial: " + initialSum + "\nFinal:   " + accountService.getAccountMoneySum());
-
-    }
-
-    public void FillData(String path, int quantity) {
-        FilesIO filesIO = new FilesIO();
-        filesIO.createAccountsFiles(path, new AccountCreator().createAccounts(quantity));
-        accountRepository.addAll(filesIO.readAccountsFiles(path));
+        System.out.println("Initial sum: " + initialSum + "\nFinal sum:   " + accountService.getAccountMoneySum());
+        System.out.println();
+        System.out.println("Operations: " + Counter.operationCounter.get());
+        System.out.println("Bank exceptions: " + Counter.bankExceptionCounter.get());
+        System.out.println("Transfers: " + Counter.transferCounter.get());
     }
 }
