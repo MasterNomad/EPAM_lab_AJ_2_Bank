@@ -1,14 +1,12 @@
 import demo.Demo;
-import repository.AccountRepository;
-import util.Beans;
+import demo.Filler;
 
 
 public class Main {
 
     public static void main(String[] args) {
-
+        new Filler().fillAccounts("data", 10);
         new Demo().execute();
-
     }
 
 }

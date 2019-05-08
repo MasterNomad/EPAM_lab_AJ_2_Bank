@@ -20,17 +20,10 @@ public class Account implements Serializable {
         return reentrantLock;
     }
 
-    public void setReentrantLock(ReentrantLock reentrantLock) {
-        this.reentrantLock = reentrantLock;
-    }
-
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public long getBalance() {
         return balance;
@@ -42,8 +35,9 @@ public class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "id=" + id +
-                " initBalance=" + initialBalance +
-                ", balance=" + balance;
+        return String.format("id: %-2d initBalance: %-5d balance: %-5d",
+                id,
+                initialBalance,
+                balance);
     }
 }

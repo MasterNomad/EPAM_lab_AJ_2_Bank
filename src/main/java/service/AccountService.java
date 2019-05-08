@@ -9,11 +9,12 @@ public class AccountService {
 
     private AccountRepository accountRepository = Beans.getAccountRepository();
 
-    public void printAccountsBalance() {
-        AtomicLong sum = new AtomicLong();
+    public String getAccountsInfo() {
+        StringBuilder stringBuilder = new StringBuilder();
         accountRepository.getAll().stream()
-                .peek(e -> sum.addAndGet(e.getBalance()))
-                .forEach(System.out::println);
+                .peek(stringBuilder::append)
+                .forEach(e -> stringBuilder.append("\n"));
+        return stringBuilder.toString();
     }
 
     public long getAccountMoneySum() {

@@ -1,8 +1,7 @@
 package demo;
 
-import repository.AccountRepository;
+import org.apache.log4j.Logger;
 import service.AccountService;
-import service.MoneyTransferService;
 import thread.TransferTask;
 import util.Beans;
 
@@ -13,19 +12,17 @@ import java.util.stream.IntStream;
 
 public class Demo {
 
-    private AccountRepository accountRepository = Beans.getAccountRepository();
     private AccountService accountService = Beans.getAccountService();
-    private MoneyTransferService moneyTransferService = Beans.getMoneyTransferService();
+    private Logger logger = Logger.getLogger(Demo.class);
+
+    private final int THREADS_AMOUNT = 20;
+    protected static final int OPERATIONS_AMOUNT = 1000;
 
     public void execute() {
-        new Filler().fillAccounts("data", 10);
-
         long initialSum = accountService.getAccountMoneySum();
 
-        ExecutorService executor = Executors.newFixedThreadPool(20);
-
-        IntStream.range(0, 1000).forEach(i -> executor.submit(new TransferTask()));
-
+        ExecutorService executor = Executors.newFixedThreadPool(THREADS_AMOUNT);
+        IntStream.range(0, OPERATIONS_AMOUNT).forEach(i -> executor.submit(new TransferTask()));
         executor.shutdown();
 
         try {
@@ -34,11 +31,15 @@ public class Demo {
             e.printStackTrace();
         }
 
-        accountService.printAccountsBalance();
-        System.out.println("Initial sum: " + initialSum + "\nFinal sum:   " + accountService.getAccountMoneySum());
-        System.out.println();
-        System.out.println("Operations: " + Counter.operationCounter.get());
-        System.out.println("Bank exceptions: " + Counter.bankExceptionCounter.get());
-        System.out.println("Transfers: " + Counter.transferCounter.get());
+        logger.info(accountService.getAccountsInfo());
+        logger.info(String.format("Initial sum: %d Final sum: %d %n%n" +
+                "Operations: %d %n" +
+                "Bank exceptions: %d %n" +
+                "Transfers: %d ",
+                initialSum,
+                accountService.getAccountMoneySum(),
+                Counter.operationCounter.get(),
+                Counter.bankExceptionCounter.get(),
+                Counter.transferCounter.get()));
     }
 }

@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 
 public class FilesIO {
 
+    private final String FILE_NAME = "acc";
+
     public List<Account> readAccountsFiles(String path) {
         List<Account> accountList = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
@@ -28,12 +30,10 @@ public class FilesIO {
         return accountList;
     }
 
-
     public void createAccountsFiles(String path, List<Account> accounts) {
         clearAccountsFiles(path);
         AtomicInteger index = new AtomicInteger();
-        String name = "/acc";
-        accounts.forEach(a -> writeFile(path + name + index.getAndIncrement(), a));
+        accounts.forEach(a -> writeFile(path +"/" + FILE_NAME + index.getAndIncrement(), a));
     }
 
     private Account readFile(String path) {

@@ -31,4 +31,8 @@ public class AccountRepository {
         return accounts;
     }
 
+    public void clear () {
+        accounts.clear();
+    }
+
 }
