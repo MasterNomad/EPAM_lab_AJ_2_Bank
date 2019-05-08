@@ -5,7 +5,7 @@ import exception.BankException;
 import org.apache.log4j.Logger;
 import repository.AccountRepository;
 import service.MoneyTransferService;
-import util.Beans;
+import demo.Beans;
 
 import java.util.Random;
 

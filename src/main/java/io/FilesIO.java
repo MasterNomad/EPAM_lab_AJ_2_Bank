@@ -16,12 +16,12 @@ import java.util.stream.Stream;
 
 public class FilesIO {
 
-    private final String FILE_NAME = "acc";
+    private final static String FILE_NAME = "acc";
 
     public List<Account> readAccountsFiles(String path) {
         List<Account> accountList = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
-           accountList = paths.map(Objects::toString).
+            accountList = paths.map(Objects::toString).
                     filter(e -> !e.equals(path))
                     .map(this::readFile).collect(Collectors.toList());
         } catch (IOException e) {
@@ -33,7 +33,7 @@ public class FilesIO {
     public void createAccountsFiles(String path, List<Account> accounts) {
         clearAccountsFiles(path);
         AtomicInteger index = new AtomicInteger();
-        accounts.forEach(a -> writeFile(path +"/" + FILE_NAME + index.getAndIncrement(), a));
+        accounts.forEach(a -> writeFile(path + "/" + FILE_NAME + index.getAndIncrement(), a));
     }
 
     private Account readFile(String path) {
@@ -56,7 +56,6 @@ public class FilesIO {
         }
     }
 
-    @SuppressWarnings("all")
     private void clearAccountsFiles(String path) {
         try {
             FileUtils.deleteDirectory(new File(path));

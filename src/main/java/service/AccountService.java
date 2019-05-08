@@ -1,7 +1,7 @@
 package service;
 
 import repository.AccountRepository;
-import util.Beans;
+import demo.Beans;
 
 import java.util.concurrent.atomic.AtomicLong;
 

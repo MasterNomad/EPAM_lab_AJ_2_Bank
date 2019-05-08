@@ -1,13 +1,11 @@
 package demo;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import repository.AccountRepository;
 import service.AccountService;
-import util.Beans;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,11 +21,15 @@ public class DemoTest {
         return new Object[100][0];
     }
 
-    @Test
-    public void execute() {
+    @Before
+    public void setUp() {
         accountRepository.clear();
         Counter.clear();
         new Filler().fillAccounts("data", 10);
+    }
+
+    @Test
+    public void execute() {
         long initSum = accountService.getAccountMoneySum();
         new Demo().execute();
         long resultSum = accountService.getAccountMoneySum();

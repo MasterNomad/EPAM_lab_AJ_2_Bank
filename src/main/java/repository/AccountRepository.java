@@ -4,7 +4,6 @@ import dto.Account;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class AccountRepository {
 
@@ -31,7 +30,7 @@ public class AccountRepository {
         return accounts;
     }
 
-    public void clear () {
+    public void clear() {
         accounts.clear();
     }
 

@@ -3,15 +3,16 @@ package demo;
 import dto.Account;
 import io.FilesIO;
 import repository.AccountRepository;
-import util.Beans;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 public class Filler {
 
+    private final static int MAX_MONEY_AMOUNT = 10000;
     private AccountRepository accountRepository = Beans.getAccountRepository();
-    private final int MAX_MONEY_AMOUNT = 10000;
 
     public void fillAccounts(String path, int quantity) {
         FilesIO filesIO = new FilesIO();

@@ -1,4 +1,4 @@
-package util;
+package demo;
 
 import repository.AccountRepository;
 import service.AccountService;
@@ -27,7 +27,7 @@ public class Beans {
     }
 
     public static MoneyTransferService getMoneyTransferService() {
-        if (Objects.isNull(moneyTransferService)){
+        if (Objects.isNull(moneyTransferService)) {
             moneyTransferService = new MoneyTransferService();
         }
 
