@@ -1,5 +1,6 @@
 package demo;
 
+import beans.Beans;
 import dto.Account;
 import io.FilesIO;
 import repository.AccountRepository;

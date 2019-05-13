@@ -1,5 +1,6 @@
 package demo;
 
+import beans.Beans;
 import org.apache.log4j.Logger;
 import service.AccountService;
 import thread.TransferTask;
@@ -18,9 +19,12 @@ public class Demo {
 
     public void execute() {
         long initialSum = accountService.getAccountMoneySum();
+        TransferGenerator transferGenerator = new TransferGenerator();
 
         ExecutorService executor = Executors.newFixedThreadPool(THREADS_AMOUNT);
-        IntStream.range(0, OPERATIONS_AMOUNT).forEach(i -> executor.submit(new TransferTask()));
+        IntStream.range(0, OPERATIONS_AMOUNT)
+                .forEach(i -> executor.submit(new TransferTask(transferGenerator.generateTransfer())));
+
         executor.shutdown();
 
         try {

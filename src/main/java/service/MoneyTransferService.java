@@ -2,6 +2,7 @@ package service;
 
 import demo.Counter;
 import dto.Account;
+import dto.Transfer;
 import exception.BankException;
 import exception.NotEnoughMoneyException;
 import org.apache.log4j.Logger;
@@ -12,43 +13,50 @@ public class MoneyTransferService {
 
     private Logger logger = Logger.getLogger(MoneyTransferService.class);
 
-    public void transferMoney(Account sender, Account recipient, long amount) throws BankException {
+    public void tryTransferMoney(Transfer transfer) throws BankException {
         Counter.operationCounter.getAndIncrement();
 
-        ReentrantLock firstLock = sender.getId() < recipient.getId() ?
-                sender.getReentrantLock() : recipient.getReentrantLock();
-        ReentrantLock secondLock = sender.getId() > recipient.getId() ?
-                sender.getReentrantLock() : recipient.getReentrantLock();
+        Account fromAccount = transfer.getFrom();
+        Account toAccount = transfer.getTo();
+        long amount = transfer.getAmount();
 
-        firstLock.lock();
-        secondLock.lock();
-        if (sender.getBalance() < amount) {
+        ReentrantLock firstLock = fromAccount.getId() < toAccount.getId() ?
+                fromAccount.getReentrantLock() : toAccount.getReentrantLock();
+        ReentrantLock secondLock = fromAccount.getId() > toAccount.getId() ?
+                fromAccount.getReentrantLock() : toAccount.getReentrantLock();
+
+        try {
+            firstLock.lock();
+            secondLock.lock();
+            transferMoney(fromAccount, toAccount, amount);
+        } finally {
             firstLock.unlock();
             secondLock.unlock();
-            throw new NotEnoughMoneyException(
-                    String.format("Not enough money. Account id: %-2d balance: %-5d attempt to transfer: %-5d",
-                            sender.getId(),
-                            sender.getBalance(),
-                            amount));
         }
-
-        sender.setBalance(sender.getBalance() - amount);
-        recipient.setBalance(recipient.getBalance() + amount);
-        logTransfer(sender, recipient, amount);
-
-        firstLock.unlock();
-        secondLock.unlock();
     }
 
-    private void logTransfer(Account sender, Account recipient, long amount) {
+    private void transferMoney(Account fromAccount, Account toAccount, long amount) throws NotEnoughMoneyException {
+        if (fromAccount.getBalance() < amount) {
+            throw new NotEnoughMoneyException(
+                    String.format("Not enough money. Account id: %-2d balance: %-5d attempt to transfer: %-5d",
+                            fromAccount.getId(),
+                            fromAccount.getBalance(),
+                            amount));
+        }
+        fromAccount.getMoney(amount);
+        toAccount.putMoney(amount);
+        logTransfer(fromAccount, toAccount, amount);
+    }
+
+    private void logTransfer(Account fromAccount, Account toAccount, long amount) {
         Counter.transferCounter.getAndIncrement();
         logger.info(String.format("Thread: %-17s transferred from id: %-2d balance: %-5d " +
                         "to id: %-2d  balance: %-5d  transferSum: %d",
                 Thread.currentThread().getName(),
-                sender.getId(),
-                sender.getBalance(),
-                recipient.getId(),
-                recipient.getBalance(),
+                fromAccount.getId(),
+                fromAccount.getBalance(),
+                toAccount.getId(),
+                toAccount.getBalance(),
                 amount));
     }
 

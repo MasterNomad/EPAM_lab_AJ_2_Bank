@@ -5,15 +5,24 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Account implements Serializable {
 
+    private final long initialBalance;
     private long id;
-    private long initialBalance;
     private long balance;
-    private ReentrantLock reentrantLock = new ReentrantLock();
+    private ReentrantLock reentrantLock;
 
     public Account(long id, long balance) {
         this.id = id;
         this.balance = balance;
         this.initialBalance = balance;
+        this.reentrantLock = new ReentrantLock();
+    }
+
+    public void putMoney(long amount) {
+        balance += amount;
+    }
+
+    public void getMoney(long amount) {
+        balance -= amount;
     }
 
     public ReentrantLock getReentrantLock() {
@@ -23,7 +32,6 @@ public class Account implements Serializable {
     public long getId() {
         return id;
     }
-
 
     public long getBalance() {
         return balance;

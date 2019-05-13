@@ -1,4 +1,4 @@
-package demo;
+package beans;
 
 import repository.AccountRepository;
 import service.AccountService;
