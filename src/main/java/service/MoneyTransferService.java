@@ -25,7 +25,6 @@ public class MoneyTransferService {
     }
 
     private void checkBalanceAndTransfer(Transfer transfer) throws NotEnoughMoneyException {
-
         Account fromAccount = transfer.getFrom();
         Account toAccount = transfer.getTo();
 
