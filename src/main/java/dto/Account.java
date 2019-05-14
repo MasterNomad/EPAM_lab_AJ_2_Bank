@@ -1,6 +1,7 @@
 package dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Account implements Serializable {
@@ -48,4 +49,5 @@ public class Account implements Serializable {
                 initialBalance,
                 balance);
     }
+
 }

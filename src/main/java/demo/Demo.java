@@ -14,7 +14,9 @@ public class Demo {
 
     protected static final int OPERATIONS_AMOUNT = 1000;
     private final int THREADS_AMOUNT = 20;
+
     private AccountService accountService = Beans.getAccountService();
+
     private Logger logger = Logger.getLogger(Demo.class);
 
     public void execute() {
@@ -33,8 +35,8 @@ public class Demo {
             e.printStackTrace();
         }
 
-        logger.info(accountService.getAccountsInfo());
-        logger.info(String.format("Initial sum: %d Final sum: %d %n%n" +
+        logger.debug(accountService.getAccountsInfo());
+        logger.debug(String.format("Initial sum: %d Final sum: %d %n%n" +
                         "Operations: %d %n" +
                         "Bank exceptions: %d %n" +
                         "Transfers: %d ",
