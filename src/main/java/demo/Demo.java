@@ -29,10 +29,12 @@ public class Demo {
 
         executor.shutdown();
 
-        try {
-            executor.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (!executor.isTerminated()){
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         logger.debug(accountService.getAccountsInfo());
