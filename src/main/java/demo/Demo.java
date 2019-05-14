@@ -1,13 +1,13 @@
 package demo;
 
 import beans.Beans;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.AccountService;
 import thread.TransferTask;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 public class Demo {
@@ -17,7 +17,7 @@ public class Demo {
 
     private AccountService accountService = Beans.getAccountService();
 
-    private Logger logger = Logger.getLogger(Demo.class);
+    private Logger logger = LoggerFactory.getLogger(Demo.class);
 
     public void execute() {
         long initialSum = accountService.getAccountMoneySum();
@@ -29,7 +29,7 @@ public class Demo {
 
         executor.shutdown();
 
-        while (!executor.isTerminated()){
+        while (!executor.isTerminated()) {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
@@ -38,14 +38,14 @@ public class Demo {
         }
 
         logger.debug(accountService.getAccountsInfo());
-        logger.debug(String.format("Initial sum: %d Final sum: %d %n%n" +
-                        "Operations: %d %n" +
-                        "Bank exceptions: %d %n" +
-                        "Transfers: %d ",
+        logger.debug("Initial sum: {} Final sum: {} \n\n" +
+                        "Operations: {}\n" +
+                        "Bank exceptions: {}\n" +
+                        "Transfers: {}",
                 initialSum,
                 accountService.getAccountMoneySum(),
                 Counter.operationCounter.get(),
                 Counter.bankExceptionCounter.get(),
-                Counter.transferCounter.get()));
+                Counter.transferCounter.get());
     }
 }

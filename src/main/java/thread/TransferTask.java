@@ -5,12 +5,13 @@ import demo.Counter;
 import dto.Transfer;
 import exception.BankException;
 import exception.NotEnoughMoneyException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.MoneyTransferService;
 
 public class TransferTask implements Runnable {
 
-    private static final Logger logger = Logger.getLogger(TransferTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransferTask.class);
     private static MoneyTransferService moneyTransferService = Beans.getMoneyTransferService();
     private final Transfer transfer;
 
@@ -24,15 +25,15 @@ public class TransferTask implements Runnable {
             moneyTransferService.tryTransferMoney(transfer);
         } catch (NotEnoughMoneyException e) {
             Counter.bankExceptionCounter.getAndIncrement();
-            logger.info(String.format("Not enough money. Account id: %-2d balance: %-5d attempt to transfer: %-5d",
+            logger.info("Not enough money. Account id:{} balance:{} attempt to transfer:{}",
                     transfer.getFrom().getId(),
                     transfer.getFrom().getBalance(),
-                    transfer.getAmount()));
+                    transfer.getAmount());
         } catch (BankException e) {
             Counter.bankExceptionCounter.getAndIncrement();
-            logger.info(String.format("Attempt to transfer money himself. Account id: %-2d attempt to transfer: %-5d",
+            logger.info("Attempt to transfer money himself. Account id:{} attempt to transfer:{}",
                     transfer.getFrom().getId(),
-                    transfer.getAmount()));
+                    transfer.getAmount());
         }
     }
 
